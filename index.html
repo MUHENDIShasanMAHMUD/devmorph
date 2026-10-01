@@ -3,7 +3,23 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>DevMorph | Modern Developer Utility Hub</title>
+  
+  <!-- Favicon (Browser Tab Icon) -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%234f46e5'/%3E%3Cpath d='M8 11l5 5-5 5M16 21h8' stroke='%23ffffff' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3C/svg%3E">
+
+  <!-- SEO & Social Meta Tags -->
+  <title>DevMorph | Modern Developer Utility Hub by Hasan Mahmud</title>
+  <meta name="description" content="Fast, 100% offline and private developer utility suite: JSON to TypeScript/Go, cURL to Fetch, JWT Decoder, Minifier. Developed by Eng. Hasan Mahmud.">
+  <meta name="keywords" content="JSON to TypeScript, JSON to Go, cURL to Fetch, JWT Decoder, Developer Tools, Hasan Mahmud, Hasan TechLab">
+  <meta name="author" content="Eng. Hasan Mahmud">
+  <link rel="canonical" href="https://tools.hasantechlab.com">
+
+  <!-- Open Graph / Social Media Sharing -->
+  <meta property="og:title" content="DevMorph | Developer Utility Suite by Eng. Hasan Mahmud">
+  <meta property="og:description" content="Instant, client-side utility suite for developers. 100% private and offline.">
+  <meta property="og:url" content="https://tools.hasantechlab.com">
+  <meta property="og:type" content="website">
+
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
@@ -37,14 +53,23 @@
           <i data-lucide="terminal" class="w-5 h-5"></i>
         </div>
         <div>
-          <h1 class="font-bold text-lg text-white tracking-wide">DevMorph</h1>
+          <div class="flex items-center gap-2">
+            <h1 class="font-bold text-lg text-white tracking-wide">DevMorph</h1>
+            <span class="text-[10px] bg-brand-500/20 text-brand-400 border border-brand-500/30 px-1.5 py-0.5 rounded font-mono">v1.0</span>
+          </div>
           <p class="text-xs text-gray-400">Client-Side Developer Utility Suite</p>
         </div>
       </div>
+      
       <div class="flex items-center gap-3">
-        <span class="text-xs bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2.5 py-1 rounded-full font-mono flex items-center gap-1.5">
+        <span class="hidden sm:flex text-xs bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2.5 py-1 rounded-full font-mono items-center gap-1.5">
           <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> 100% Offline & Private
         </span>
+        <!-- Main Portfolio Link -->
+        <a href="https://hasantechlab.com" target="_blank" rel="noopener noreferrer" 
+           class="text-xs text-gray-300 hover:text-white bg-gray-800 hover:bg-gray-700 border border-gray-700 px-3 py-1.5 rounded-lg transition flex items-center gap-1.5">
+          <i data-lucide="globe" class="w-3.5 h-3.5 text-brand-500"></i> Main Site
+        </a>
       </div>
     </div>
   </header>
@@ -140,8 +165,27 @@
 
   </main>
 
-  <footer class="border-t border-gray-800 py-3 text-center text-xs text-gray-500">
-    Built for developers • Fast, zero tracking, run entirely on your browser
+  <!-- Footer with Engineering Branding & Direct Contacts -->
+  <footer class="border-t border-gray-800 bg-dark-800/40 py-4 px-4 text-xs text-gray-400">
+    <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
+      <div>
+        Built with passion by <span class="text-white font-medium">Eng. Hasan Mahmud</span> • Hasan TechLab
+      </div>
+      <div class="flex items-center gap-4 text-gray-400">
+        <a href="https://hasantechlab.com" target="_blank" class="hover:text-brand-400 transition flex items-center gap-1">
+          <i data-lucide="user" class="w-3.5 h-3.5"></i> Portfolio
+        </a>
+        <a href="https://github.com/MUHENDIShasanMAHMUD/devmorph" target="_blank" class="hover:text-white transition flex items-center gap-1">
+          <i data-lucide="github" class="w-3.5 h-3.5"></i> GitHub
+        </a>
+        <a href="https://www.linkedin.com/in/hasan-mahmud" target="_blank" class="hover:text-blue-400 transition flex items-center gap-1">
+          <i data-lucide="linkedin" class="w-3.5 h-3.5"></i> LinkedIn
+        </a>
+        <a href="mailto:contact@hasantechlab.com" class="hover:text-amber-400 transition flex items-center gap-1">
+          <i data-lucide="mail" class="w-3.5 h-3.5"></i> Contact
+        </a>
+      </div>
+    </div>
   </footer>
 
   <script>
@@ -201,12 +245,11 @@
       }, 2000);
     }
 
-    // ميزة رفع الملفات
     function handleFileUpload(event) {
       const file = event.target.files[0];
       if (!file) return;
       readFileContent(file);
-      event.target.value = ''; // تفريغ حقل الملف لإمكانية اختياره مجدداً
+      event.target.value = '';
     }
 
     function readFileContent(file) {
@@ -221,7 +264,6 @@
       reader.readAsText(file);
     }
 
-    // ميزة Drag and Drop
     ['dragenter', 'dragover'].forEach(name => {
       inputContainer.addEventListener(name, (e) => {
         e.preventDefault();
@@ -243,13 +285,9 @@
       }
     });
 
-    // ميزة تنزيل النتيجة كملف
     function downloadOutputFile() {
       const content = outputEl.value;
-      if (!content) {
-        alert("Nothing to download!");
-        return;
-      }
+      if (!content) return;
 
       let filename = "devmorph_output.txt";
       let mimeType = "text/plain";
@@ -343,7 +381,6 @@
       }
     }
 
-    // Converters
     function convertJsonToTs(obj, interfaceName = "RootObject") {
       let interfaces = [];
       function generate(target, name) {
