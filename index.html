@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DevMorph | Modern Developer Utility Hub</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: { 500: '#6366f1', 600: '#4f46e5' },
+            dark: { 900: '#0b0f19', 800: '#111827', 700: '#1f2937' }
+          }
+        }
+      }
+    }
+  </script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    textarea::-webkit-scrollbar { width: 6px; height: 6px; }
+    textarea::-webkit-scrollbar-thumb { background: #374151; border-radius: 4px; }
+    .drag-over { border-color: #6366f1 !important; background-color: rgba(99, 102, 241, 0.05) !important; }
+  </style>
+</head>
+<body class="bg-dark-900 text-gray-200 min-h-screen flex flex-col font-sans antialiased selection:bg-brand-500 selection:text-white">
+
+  <!-- Header -->
+  <header class="border-b border-gray-800 bg-dark-800/60 backdrop-blur sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="p-2 bg-brand-500/10 text-brand-500 rounded-lg border border-brand-500/20">
+          <i data-lucide="terminal" class="w-5 h-5"></i>
+        </div>
+        <div>
+          <h1 class="font-bold text-lg text-white tracking-wide">DevMorph</h1>
+          <p class="text-xs text-gray-400">Client-Side Developer Utility Suite</p>
+        </div>
+      </div>
+      <div class="flex items-center gap-3">
+        <span class="text-xs bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2.5 py-1 rounded-full font-mono flex items-center gap-1.5">
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> 100% Offline & Private
+        </span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 py-6 flex-1 flex flex-col w-full gap-4">
+    
+    <!-- Controls Bar -->
+    <div class="flex flex-wrap items-center justify-between gap-3 bg-dark-800 p-2.5 rounded-xl border border-gray-800">
+      <div class="flex items-center gap-2 overflow-x-auto">
+        <button onclick="setMode('json2ts')" id="btn-json2ts" class="tab-btn px-3 py-1.5 rounded-lg text-xs font-medium transition bg-brand-600 text-white">
+          JSON ➔ TypeScript
+        </button>
+        <button onclick="setMode('json2go')" id="btn-json2go" class="tab-btn px-3 py-1.5 rounded-lg text-xs font-medium transition text-gray-400 hover:text-white hover:bg-gray-800">
+          JSON ➔ Go Struct
+        </button>
+        <button onclick="setMode('curl2fetch')" id="btn-curl2fetch" class="tab-btn px-3 py-1.5 rounded-lg text-xs font-medium transition text-gray-400 hover:text-white hover:bg-gray-800">
+          cURL ➔ Fetch
+        </button>
+        <button onclick="setMode('jwt')" id="btn-jwt" class="tab-btn px-3 py-1.5 rounded-lg text-xs font-medium transition text-gray-400 hover:text-white hover:bg-gray-800">
+          JWT Decoder
+        </button>
+        <button onclick="setMode('minify')" id="btn-minify" class="tab-btn px-3 py-1.5 rounded-lg text-xs font-medium transition text-gray-400 hover:text-white hover:bg-gray-800">
+          JSON Minify / Prettify
+        </button>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <button onclick="handleConvert()" class="text-xs text-white bg-brand-600 hover:bg-brand-500 px-3 py-1.5 rounded-lg font-medium shadow-sm transition flex items-center gap-1.5">
+          <i data-lucide="play" class="w-3.5 h-3.5 fill-current"></i> Convert Now
+        </button>
+        <button onclick="loadSample()" class="text-xs text-gray-300 hover:text-white px-2.5 py-1.5 rounded-lg border border-gray-700 bg-gray-800/80 hover:bg-gray-700 transition flex items-center gap-1.5">
+          <i data-lucide="sparkles" class="w-3.5 h-3.5"></i> Load Sample
+        </button>
+        <button onclick="clearAll()" class="text-xs text-rose-400 hover:text-rose-300 px-2.5 py-1.5 rounded-lg border border-rose-900/40 bg-rose-950/20 hover:bg-rose-900/30 transition flex items-center gap-1.5">
+          <i data-lucide="trash-2" class="w-3.5 h-3.5"></i> Clear
+        </button>
+      </div>
+    </div>
+
+    <!-- Editor Panels Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 flex-1">
+      
+      <!-- Input Panel -->
+      <div id="input-container" class="bg-dark-800 border border-gray-800 rounded-xl flex flex-col overflow-hidden transition duration-150">
+        <div class="px-4 py-2.5 border-b border-gray-800 bg-dark-800/80 flex items-center justify-between text-xs text-gray-400 font-mono">
+          <span class="flex items-center gap-2 font-medium text-gray-300">
+            <i data-lucide="file-input" class="w-4 h-4 text-brand-500"></i> Input (Type, Paste, or Drop File)
+          </span>
+          <div class="flex items-center gap-3">
+            <span id="input-stats">0 chars</span>
+            <!-- Upload Button -->
+            <label class="cursor-pointer text-gray-300 hover:text-white bg-gray-700/60 hover:bg-gray-700 px-2 py-1 rounded transition flex items-center gap-1">
+              <i data-lucide="upload" class="w-3.5 h-3.5"></i> Upload
+              <input type="file" id="file-uploader" class="hidden" onchange="handleFileUpload(event)">
+            </label>
+          </div>
+        </div>
+        <textarea id="input" 
+          placeholder="Paste, type, or drag & drop a file here..." 
+          class="flex-1 w-full bg-transparent p-4 font-mono text-sm text-gray-200 outline-none resize-none placeholder-gray-600 focus:ring-1 focus:ring-brand-500"></textarea>
+      </div>
+
+      <!-- Output Panel -->
+      <div class="bg-dark-800 border border-gray-800 rounded-xl flex flex-col overflow-hidden relative">
+        <div class="px-4 py-2.5 border-b border-gray-800 bg-dark-800/80 flex items-center justify-between text-xs text-gray-400 font-mono">
+          <span class="flex items-center gap-2 font-medium text-gray-300">
+            <i data-lucide="file-output" class="w-4 h-4 text-emerald-400"></i> Output
+          </span>
+          <div class="flex items-center gap-2">
+            <!-- Download Button -->
+            <button onclick="downloadOutputFile()" class="text-xs text-gray-300 hover:text-white bg-gray-700/60 hover:bg-gray-700 px-2.5 py-1 rounded transition flex items-center gap-1.5">
+              <i data-lucide="download" class="w-3.5 h-3.5"></i> Download
+            </button>
+            <!-- Copy Button -->
+            <button id="copy-btn" onclick="copyOutput()" class="text-xs text-gray-300 hover:text-white bg-gray-700/60 hover:bg-gray-700 px-2.5 py-1 rounded transition flex items-center gap-1.5">
+              <i data-lucide="copy" class="w-3.5 h-3.5"></i> Copy Code
+            </button>
+          </div>
+        </div>
+        <textarea id="output" readonly 
+          placeholder="Result will appear here automatically..." 
+          class="flex-1 w-full bg-[#0d121f] p-4 font-mono text-sm text-emerald-400 outline-none resize-none placeholder-gray-700 cursor-text"></textarea>
+        
+        <!-- Error Bar -->
+        <div id="error-bar" class="hidden absolute bottom-3 left-3 right-3 bg-rose-500/10 border border-rose-500/30 text-rose-400 text-xs px-3 py-2 rounded-lg flex items-center gap-2 shadow-lg backdrop-blur">
+          <i data-lucide="alert-circle" class="w-4 h-4 shrink-0"></i>
+          <span id="error-msg">Syntax Error</span>
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+
+  <footer class="border-t border-gray-800 py-3 text-center text-xs text-gray-500">
+    Built for developers • Fast, zero tracking, run entirely on your browser
+  </footer>
+
+  <script>
+    let currentMode = 'json2ts';
+    const inputEl = document.getElementById('input');
+    const outputEl = document.getElementById('output');
+    const statsEl = document.getElementById('input-stats');
+    const errorBar = document.getElementById('error-bar');
+    const errorMsg = document.getElementById('error-msg');
+    const inputContainer = document.getElementById('input-container');
+
+    function setMode(mode) {
+      currentMode = mode;
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.remove('bg-brand-600', 'text-white');
+        btn.classList.add('text-gray-400', 'hover:text-white', 'hover:bg-gray-800');
+      });
+      const activeBtn = document.getElementById(`btn-${mode}`);
+      if (activeBtn) {
+        activeBtn.classList.remove('text-gray-400', 'hover:text-white', 'hover:bg-gray-800');
+        activeBtn.classList.add('bg-brand-600', 'text-white');
+      }
+      hideError();
+      handleConvert();
+    }
+
+    function clearAll() {
+      inputEl.value = '';
+      outputEl.value = '';
+      updateStats();
+      hideError();
+    }
+
+    function updateStats() {
+      statsEl.innerText = `${inputEl.value.length} chars`;
+    }
+
+    function showError(msg) {
+      errorMsg.innerText = msg;
+      errorBar.classList.remove('hidden');
+      outputEl.value = '';
+    }
+
+    function hideError() {
+      errorBar.classList.add('hidden');
+    }
+
+    function copyOutput() {
+      if (!outputEl.value) return;
+      navigator.clipboard.writeText(outputEl.value);
+      const btn = document.getElementById('copy-btn');
+      btn.innerHTML = `<i data-lucide="check" class="w-3.5 h-3.5 text-emerald-400"></i> Copied!`;
+      lucide.createIcons();
+      setTimeout(() => {
+        btn.innerHTML = `<i data-lucide="copy" class="w-3.5 h-3.5"></i> Copy Code`;
+        lucide.createIcons();
+      }, 2000);
+    }
+
+    // ميزة رفع الملفات
+    function handleFileUpload(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      readFileContent(file);
+      event.target.value = ''; // تفريغ حقل الملف لإمكانية اختياره مجدداً
+    }
+
+    function readFileContent(file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        inputEl.value = e.target.result;
+        handleConvert();
+      };
+      reader.onerror = () => {
+        showError("Failed to read file");
+      };
+      reader.readAsText(file);
+    }
+
+    // ميزة Drag and Drop
+    ['dragenter', 'dragover'].forEach(name => {
+      inputContainer.addEventListener(name, (e) => {
+        e.preventDefault();
+        inputContainer.classList.add('drag-over');
+      });
+    });
+
+    ['dragleave', 'drop'].forEach(name => {
+      inputContainer.addEventListener(name, (e) => {
+        e.preventDefault();
+        inputContainer.classList.remove('drag-over');
+      });
+    });
+
+    inputContainer.addEventListener('drop', (e) => {
+      const files = e.dataTransfer.files;
+      if (files.length > 0) {
+        readFileContent(files[0]);
+      }
+    });
+
+    // ميزة تنزيل النتيجة كملف
+    function downloadOutputFile() {
+      const content = outputEl.value;
+      if (!content) {
+        alert("Nothing to download!");
+        return;
+      }
+
+      let filename = "devmorph_output.txt";
+      let mimeType = "text/plain";
+
+      switch (currentMode) {
+        case 'json2ts':
+          filename = "types.ts";
+          mimeType = "application/typescript";
+          break;
+        case 'json2go':
+          filename = "models.go";
+          mimeType = "text/plain";
+          break;
+        case 'curl2fetch':
+          filename = "api_request.js";
+          mimeType = "application/javascript";
+          break;
+        case 'jwt':
+          filename = "jwt_decoded.json";
+          mimeType = "application/json";
+          break;
+        case 'minify':
+          filename = "data.min.json";
+          mimeType = "application/json";
+          break;
+      }
+
+      const blob = new Blob([content], { type: mimeType });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+
+    function loadSample() {
+      if (currentMode.startsWith('json') || currentMode === 'minify') {
+        inputEl.value = JSON.stringify({
+          project: "DevMorph",
+          active: true,
+          metrics: { latency_ms: 12.4, requests: 1040 },
+          modules: [
+            { id: 1, name: "core_engine" }
+          ]
+        }, null, 2);
+      } else if (currentMode === 'curl2fetch') {
+        inputEl.value = `curl -X POST "https://api.myserver.com/devices" \\
+  -H "Authorization: Bearer token_abc_123" \\
+  -H "Content-Type: application/json" \\
+  -d '{"device": "ESP32", "status": "active"}'`;
+      } else if (currentMode === 'jwt') {
+        inputEl.value = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTYiLCJ1c2VyIjoiSGFzYW4iLCJyb2xlIjoiRW5naW5lZXIifQ.mockSignatureValue';
+      }
+      handleConvert();
+    }
+
+    function handleConvert() {
+      updateStats();
+      hideError();
+      const raw = inputEl.value.trim();
+
+      if (!raw) {
+        outputEl.value = '';
+        return;
+      }
+
+      try {
+        switch (currentMode) {
+          case 'json2ts':
+            outputEl.value = convertJsonToTs(JSON.parse(raw));
+            break;
+          case 'json2go':
+            outputEl.value = convertJsonToGo(JSON.parse(raw));
+            break;
+          case 'curl2fetch':
+            outputEl.value = convertCurlToFetch(raw);
+            break;
+          case 'jwt':
+            outputEl.value = decodeJwt(raw);
+            break;
+          case 'minify':
+            const obj = JSON.parse(raw);
+            outputEl.value = raw.includes('\n') ? JSON.stringify(obj) : JSON.stringify(obj, null, 2);
+            break;
+        }
+      } catch (e) {
+        showError(e.message);
+      }
+    }
+
+    // Converters
+    function convertJsonToTs(obj, interfaceName = "RootObject") {
+      let interfaces = [];
+      function generate(target, name) {
+        let result = `export interface ${name} {\n`;
+        for (const [key, value] of Object.entries(target)) {
+          let type = typeof value;
+          if (value === null) type = 'any';
+          else if (Array.isArray(value)) {
+            if (value.length > 0 && typeof value[0] === 'object') {
+              const subName = capitalize(key) + 'Item';
+              generate(value[0], subName);
+              type = `${subName}[]`;
+            } else {
+              type = value.length > 0 ? `${typeof value[0]}[]` : 'any[]';
+            }
+          } else if (type === 'object') {
+            const subName = capitalize(key);
+            generate(value, subName);
+            type = subName;
+          }
+          result += `  ${key}: ${type};\n`;
+        }
+        result += `}\n`;
+        interfaces.push(result);
+      }
+      generate(obj, interfaceName);
+      return interfaces.reverse().join('\n');
+    }
+
+    function convertJsonToGo(obj, structName = "Model") {
+      let structs = [];
+      function generate(target, name) {
+        let result = `type ${name} struct {\n`;
+        for (const [key, value] of Object.entries(target)) {
+          let fieldName = capitalize(key);
+          let type = "string";
+          if (typeof value === "number") type = Number.isInteger(value) ? "int" : "float64";
+          else if (typeof value === "boolean") type = "bool";
+          else if (Array.isArray(value)) {
+            if (value.length > 0 && typeof value[0] === 'object') {
+              const sub = capitalize(key) + 'Item';
+              generate(value[0], sub);
+              type = `[]${sub}`;
+            } else {
+              type = value.length > 0 ? `[]${typeof value[0]}` : '[]interface{}';
+            }
+          } else if (value && typeof value === "object") {
+            const sub = capitalize(key);
+            generate(value, sub);
+            type = sub;
+          }
+          result += `\t${fieldName} ${type} \`json:"${key}"\`\n`;
+        }
+        result += `}\n`;
+        structs.push(result);
+      }
+      generate(obj, structName);
+      return structs.reverse().join('\n');
+    }
+
+    function convertCurlToFetch(curl) {
+      if (!curl.toLowerCase().includes('curl')) {
+        throw new Error("Input must be a valid cURL command");
+      }
+      const clean = curl.replace(/\\\r?\n/g, ' ');
+
+      const urlMatch = clean.match(/https?:\/\/[^\s'"]+/);
+      const url = urlMatch ? urlMatch[0] : 'https://api.example.com';
+
+      const methodMatch = clean.match(/-X\s+([A-Z]+)/i);
+      let method = methodMatch ? methodMatch[1].toUpperCase() : null;
+      if (!method) {
+        method = (clean.includes('-d ') || clean.includes('--data')) ? 'POST' : 'GET';
+      }
+
+      const headers = {};
+      const headerMatches = clean.matchAll(/-H\s+['"]([^'"]+)['"]/g);
+      for (const m of headerMatches) {
+        const parts = m[1].split(':');
+        if (parts.length >= 2) {
+          headers[parts[0].trim()] = parts.slice(1).join(':').trim();
+        }
+      }
+
+      const bodyMatch = clean.match(/(?:-d|--data(?:-raw)?)\s+['"]([\s\S]*?)['"](?:\s+-[A-Za-z]|$)/);
+      let body = bodyMatch ? bodyMatch[1] : null;
+
+      let code = `const response = await fetch("${url}", {\n`;
+      code += `  method: "${method}",\n`;
+      if (Object.keys(headers).length > 0) {
+        code += `  headers: ${JSON.stringify(headers, null, 4).replace(/\n/g, '\n  ')},\n`;
+      }
+      if (body && method !== 'GET') {
+        try {
+          const parsed = JSON.parse(body);
+          code += `  body: JSON.stringify(${JSON.stringify(parsed, null, 4).replace(/\n/g, '  ')})\n`;
+        } catch {
+          code += `  body: ${JSON.stringify(body)}\n`;
+        }
+      }
+      code += `});\n\nconst data = await response.json();`;
+      return code;
+    }
+
+    function decodeJwt(token) {
+      const parts = token.trim().split('.');
+      if (parts.length < 2) {
+        throw new Error("Invalid JWT format: Token must have header and payload separated by dots");
+      }
+      const decode = (str) => {
+        try {
+          const base64 = str.replace(/-/g, '+').replace(/_/g, '/');
+          const decodedStr = decodeURIComponent(atob(base64).split('').map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join(''));
+          return JSON.parse(decodedStr);
+        } catch (e) {
+          throw new Error("Malformed JWT payload: invalid base64 encoding");
+        }
+      };
+
+      const header = decode(parts[0]);
+      const payload = decode(parts[1]);
+      const signatureInfo = parts[2] ? `// Signature Verified: [${parts[2].slice(0, 10)}...]` : '// Signature: None';
+
+      return `// Header\n${JSON.stringify(header, null, 2)}\n\n// Payload\n${JSON.stringify(payload, null, 2)}\n\n${signatureInfo}`;
+    }
+
+    function capitalize(s) {
+      return s.charAt(0).toUpperCase() + s.slice(1);
+    }
+
+    ['input', 'keyup', 'paste', 'change'].forEach(evt => {
+      inputEl.addEventListener(evt, handleConvert);
+    });
+
+    lucide.createIcons();
+    loadSample();
+  </script>
+</body>
+</html>
