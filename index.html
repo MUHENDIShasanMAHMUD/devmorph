@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <!-- Favicon (Browser Tab Icon) -->
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%234f46e5'/%3E%3Cpath d='M8 11l5 5-5 5M16 21h8' stroke='%23ffffff' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3C/svg%3E">
+  <!-- High-Res Custom Favicon (Terminal/Code Symbol) -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230f172a' stroke='%234f46e5' stroke-width='2'/%3E%3Cpath d='M9 11l5 5-5 5' stroke='%236366f1' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3Cline x1='16' y1='21' x2='23' y2='21' stroke='%2338bdf8' stroke-width='2.5' stroke-linecap='round'/%3E%3C/svg%3E">
 
   <!-- SEO & Social Meta Tags -->
   <title>DevMorph | Modern Developer Utility Hub by Hasan Mahmud</title>
@@ -165,26 +165,51 @@
 
   </main>
 
-  <!-- Footer with Engineering Branding & Direct Contacts -->
-  <footer class="border-t border-gray-800 bg-dark-800/40 py-4 px-4 text-xs text-gray-400">
-    <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
-      <div>
-        Built with passion by <span class="text-white font-medium">Eng. Hasan Mahmud</span> • Hasan TechLab
+  <!-- Modern & Compact Developer Footer -->
+  <footer class="border-t border-gray-800/80 bg-dark-800/50 py-3.5 px-4 text-xs">
+    <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-3 font-sans">
+      
+      <!-- Creator Brand -->
+      <div class="flex items-center gap-2 text-gray-400">
+        <span class="inline-block w-2 h-2 rounded-full bg-indigo-500"></span>
+        <span>Built by <strong class="text-gray-100 font-semibold tracking-wide">Eng. Hasan Mahmud</strong></span>
+        <span class="text-gray-600">•</span>
+        <span class="text-indigo-400 font-medium">Hasan TechLab</span>
       </div>
-      <div class="flex items-center gap-4 text-gray-400">
-        <a href="https://hasantechlab.com" target="_blank" class="hover:text-brand-400 transition flex items-center gap-1">
-          <i data-lucide="user" class="w-3.5 h-3.5"></i> Portfolio
+
+      <!-- Social / Professional Dock -->
+      <div class="flex items-center gap-2">
+        <a href="https://hasantechlab.com" target="_blank" rel="noopener noreferrer" 
+           class="px-2.5 py-1 rounded-md bg-dark-900 border border-gray-800 text-gray-300 hover:text-white hover:border-gray-700 transition flex items-center gap-1.5" title="Portfolio">
+          <i data-lucide="globe" class="w-3.5 h-3.5 text-brand-500"></i>
+          <span>Portfolio</span>
         </a>
-        <a href="https://github.com/MUHENDIShasanMAHMUD/devmorph" target="_blank" class="hover:text-white transition flex items-center gap-1">
-          <i data-lucide="github" class="w-3.5 h-3.5"></i> GitHub
+
+        <a href="https://github.com/MUHENDIShasanMAHMUD/devmorph" target="_blank" rel="noopener noreferrer" 
+           class="px-2.5 py-1 rounded-md bg-dark-900 border border-gray-800 text-gray-300 hover:text-white hover:border-gray-700 transition flex items-center gap-1.5" title="GitHub Repository">
+          <i data-lucide="github" class="w-3.5 h-3.5"></i>
+          <span>GitHub</span>
         </a>
-        <a href="https://www.linkedin.com/in/hasan-mahmud" target="_blank" class="hover:text-blue-400 transition flex items-center gap-1">
-          <i data-lucide="linkedin" class="w-3.5 h-3.5"></i> LinkedIn
+
+        <a href="https://www.linkedin.com/in/hasan-mahmud" target="_blank" rel="noopener noreferrer" 
+           class="px-2.5 py-1 rounded-md bg-dark-900 border border-gray-800 text-gray-300 hover:text-sky-400 hover:border-sky-500/30 transition flex items-center gap-1.5" title="LinkedIn">
+          <i data-lucide="linkedin" class="w-3.5 h-3.5 text-sky-400"></i>
+          <span>LinkedIn</span>
         </a>
-        <a href="mailto:contact@hasantechlab.com" class="hover:text-amber-400 transition flex items-center gap-1">
-          <i data-lucide="mail" class="w-3.5 h-3.5"></i> Contact
+
+        <a href="https://youtube.com/@hasantechlab" target="_blank" rel="noopener noreferrer" 
+           class="px-2.5 py-1 rounded-md bg-dark-900 border border-gray-800 text-gray-300 hover:text-rose-400 hover:border-rose-500/30 transition flex items-center gap-1.5" title="YouTube Channel">
+          <i data-lucide="youtube" class="w-3.5 h-3.5 text-rose-500"></i>
+          <span>YouTube</span>
+        </a>
+
+        <a href="mailto:contact@hasantechlab.com" 
+           class="px-2.5 py-1 rounded-md bg-dark-900 border border-gray-800 text-gray-300 hover:text-amber-400 hover:border-amber-500/30 transition flex items-center gap-1.5" title="Contact Email">
+          <i data-lucide="mail" class="w-3.5 h-3.5 text-amber-400"></i>
+          <span>Contact</span>
         </a>
       </div>
+
     </div>
   </footer>
 
